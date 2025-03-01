@@ -1,7 +1,10 @@
-import { FC } from 'react';
-
+import { FC, useEffect, useState } from 'react';
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from 'src/services/store';
+import { getFeeds, TFeedsResponseSlice } from '../../services/feedSlice';
+import { TFeedsResponse } from '@api';
 
 const getOrders = (orders: TOrder[], status: string): number[] =>
   orders
@@ -10,14 +13,29 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
     .slice(0, 20);
 
 export const FeedInfo: FC = () => {
-  /** TODO: взять переменные из стора */
-  const orders: TOrder[] = [];
-  const feed = {};
+  const dispatch: AppDispatch = useDispatch();
+  const feed: TFeedsResponseSlice = useSelector(
+    (state: RootState) => state.feed.feed
+  );
+  const _orders = feed.orders;
 
-  const readyOrders = getOrders(orders, 'done');
+  const [_feed, setFeed] = useState<TFeedsResponseSlice>();
+  useEffect(() => {
+    const fetchFeed = async () => {
+      try {
+        await dispatch(getFeeds()).unwrap();
+      } catch (error) {
+        console.error('Failed to fetch feed:', error);
+      }
+    };
+    fetchFeed();
+  }, [dispatch]);
 
-  const pendingOrders = getOrders(orders, 'pending');
-
+  useEffect(() => {
+    setFeed(feed);
+  }, [feed]);
+  const readyOrders = getOrders(_orders, 'done');
+  const pendingOrders = getOrders(_orders, 'pending');
   return (
     <FeedInfoUI
       readyOrders={readyOrders}

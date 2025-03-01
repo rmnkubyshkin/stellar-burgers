@@ -18,7 +18,7 @@ export const BurgerIngredientsUI: FC<BurgerIngredientsUIProps> = memo(
     mainsRef,
     saucesRef,
     onTabClick
-  }) => (
+  }: BurgerIngredientsUIProps) => (
     <>
       <section className={styles.burger_ingredients}>
         <nav>

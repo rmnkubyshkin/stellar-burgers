@@ -1,11 +1,9 @@
-import { useSelector } from '../../services/store';
-
 import styles from './constructor-page.module.css';
-
-import { BurgerIngredients } from '../../components';
+import { AppHeader, BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
 import { FC } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
 export const ConstructorPage: FC = () => {
   /** TODO: взять переменную из стора */
@@ -13,6 +11,7 @@ export const ConstructorPage: FC = () => {
 
   return (
     <>
+      <AppHeader />
       {isIngredientsLoading ? (
         <Preloader />
       ) : (
