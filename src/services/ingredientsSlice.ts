@@ -24,18 +24,19 @@ export const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
   reducers: {
-    addIngredients: (state, action: PayloadAction<TIngredient>) => {
-      state.data.push(action.payload);
-    }
+    // addIngredients: (state, action: PayloadAction<TIngredient>) => {
+    //   state.data.push(action.payload);
+    // }
   },
   selectors: {
     selectIngredients: (state: IngredientsState) => state.data
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getIngredients.pending, (state) => {
+      .addCase(getIngredients.pending, (state, action) => {
+        console.log('action:', action);
         state.loading = true;
-        state.error = null;
+        state.error = action.type;
       })
       .addCase(getIngredients.rejected, (state, action) => {
         state.loading = false;

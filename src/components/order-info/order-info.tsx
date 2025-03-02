@@ -57,21 +57,12 @@ export const OrderInfo: FC = () => {
 
   useEffect(() => {
     setOrders(orders);
-    console.log('_orders in OrderInfo->useEffect: ', _orders);
-
     orderData =
       _orders && idOrder
         ? _orders.filter((order) => order.number === Number(idOrder))[0]
         : null;
     orderData ? setOrdersData(orderData) : null;
-    console.log('idOrder in OrderInfo->useEffect: ', idOrder);
-    console.log('orderData in OrderInfo->useEffect: ', orderData);
   }, [orders]);
-
-  // console.log('ingredient in OrderInfo: ', ingredients);
-  // console.log('orders in OrderInfo: ', orders);
-  // console.log('orderData in OrderInfo: ', orderData);
-  // console.log('idOrder in OrderInfo: ', idOrder);
 
   const orderInfo = useMemo(() => {
     if (!_orderData || !ingredients.length) return null;

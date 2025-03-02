@@ -1,9 +1,29 @@
-import { FC, useMemo } from 'react';
-import { TConstructorIngredient } from '@utils-types';
+import { FC, useEffect, useMemo } from 'react';
+import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
+import { AppDispatch, RootState } from '../../services/store';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getConstructorItems,
+  getModalData,
+  getOrderRequest,
+  handleOrderRequest
+} from '../../services/constructorSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
+  const dispatch: AppDispatch = useDispatch();
+
+  const _orderRequest: boolean = useSelector(
+    (state: RootState) => state.constructor.orderRequest
+  );
+  const _orderModalData: TOrder | null = useSelector(
+    (state: RootState) => state.constructor.orderModalData
+  );
+  const _constructorItems = useSelector(
+    (state: RootState) => state.constructor.constructorItems
+  );
+
   const constructorItems = {
     bun: {
       price: 0

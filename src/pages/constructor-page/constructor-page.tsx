@@ -4,14 +4,15 @@ import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
 import { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import { TIngredient } from '@utils-types';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../services/store';
 
 export const ConstructorPage: FC = () => {
-  /** TODO: взять переменную из стора */
   const isIngredientsLoading = false;
 
   return (
     <>
-      <AppHeader />
       {isIngredientsLoading ? (
         <Preloader />
       ) : (
