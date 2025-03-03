@@ -23,18 +23,13 @@ export const getIngredients = createAsyncThunk(
 export const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
-  reducers: {
-    // addIngredients: (state, action: PayloadAction<TIngredient>) => {
-    //   state.data.push(action.payload);
-    // }
-  },
+  reducers: {},
   selectors: {
     selectIngredients: (state: IngredientsState) => state.data
   },
   extraReducers: (builder) => {
     builder
       .addCase(getIngredients.pending, (state, action) => {
-        console.log('action:', action);
         state.loading = true;
         state.error = action.type;
       })

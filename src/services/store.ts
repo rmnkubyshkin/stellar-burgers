@@ -12,15 +12,17 @@ import { feedSlice, FeedState } from '../services/feedSlice';
 import { combineSlices } from '@reduxjs/toolkit';
 import ingredientsReducer from '../services/ingredientsSlice';
 import feedReducer from '../services/feedSlice';
-import constructorReducer, {
-  ConstructorState
-} from '../services/constructorSlice';
+import cookingReducer, { CookingState } from './cookingSlice';
+import userReducer, { UserState } from './userSlice';
+import orderReducer, { OrderState } from './orderSlice';
 
 export const store = configureStore({
   reducer: {
     ingredients: ingredientsReducer,
     feed: feedReducer,
-    constructor: constructorReducer
+    cook: cookingReducer,
+    user: userReducer,
+    order: orderReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -30,7 +32,9 @@ export const store = configureStore({
 export type RootState = {
   ingredients: IngredientsState;
   feed: FeedState;
-  constructor: ConstructorState;
+  cook: CookingState;
+  user: UserState;
+  order: OrderState;
 };
 export type AppDispatch = typeof store.dispatch;
 export const useDispatch: () => AppDispatch = () => dispatchHook();
