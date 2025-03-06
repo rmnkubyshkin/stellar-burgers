@@ -22,11 +22,7 @@ export const FeedInfo: FC = () => {
   const [_feed, setFeed] = useState<TFeedsResponseSlice>();
   useEffect(() => {
     const fetchFeed = async () => {
-      try {
-        await dispatch(getFeeds()).unwrap();
-      } catch (error) {
-        console.error('Failed to fetch feed:', error);
-      }
+      await dispatch(getFeeds()).unwrap();
     };
     fetchFeed();
   }, [dispatch]);

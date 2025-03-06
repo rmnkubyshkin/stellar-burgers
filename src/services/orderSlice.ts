@@ -1,16 +1,21 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { orderBurgerApi, TNewOrderResponse } from '../utils/burger-api';
+import {
+  getOrdersApi,
+  orderBurgerApi,
+  TFeedsResponse,
+  TNewOrderResponse
+} from '../utils/burger-api';
 import { TOrder } from '../utils/types';
 
 export interface OrderState {
-  order: TOrder;
+  order: TOrder | null;
   orderRequest: boolean;
   loading: boolean;
   error: string | null | undefined;
 }
 
 const initialState: OrderState = {
-  order: {} as TOrder,
+  order: null,
   orderRequest: false,
   loading: false,
   error: null
@@ -20,14 +25,18 @@ export const pushOrder = createAsyncThunk(
   'order/pushOrder',
   async (ingredients: string[]) => {
     const response = await orderBurgerApi(ingredients);
-    console.log('response: ', response);
     return response as TNewOrderResponse;
   }
 );
 export const orderSlice = createSlice({
   name: 'order',
   initialState,
-  reducers: {},
+  reducers: {
+    resetOrder: (state: OrderState) => {
+      state.order = null;
+      state.orderRequest = false;
+    }
+  },
   selectors: {
     selectOrder: (state: OrderState) => state.order
   },
@@ -37,8 +46,6 @@ export const orderSlice = createSlice({
         state.orderRequest = true;
         state.loading = true;
         state.error = action.type;
-        console.log('pending.order: ', state.order);
-        console.log('pending.orderRequest: ', state.orderRequest);
       })
       .addCase(pushOrder.rejected, (state, action) => {
         state.orderRequest = false;
@@ -49,10 +56,10 @@ export const orderSlice = createSlice({
         state.loading = false;
         state.orderRequest = false;
         state.order = action.payload.order;
-        console.log('fulfilled.order: ', state.order);
-        console.log('fulfilled.orderRequest: ', state.orderRequest);
       });
   }
 });
+
+export const { resetOrder } = orderSlice.actions;
 export default orderSlice.reducer;
 export const { selectOrder } = orderSlice.selectors;

@@ -2,12 +2,7 @@ import { FC, memo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BurgerIngredientUI } from '@ui';
 import { TBurgerIngredientProps } from './type';
-import {
-  setCookingItems,
-  handleOrderModalData,
-  handleOrderRequest,
-  CookingItemsType
-} from '../../services/cookingSlice';
+import { setCookingItems, CookingItemsType } from '../../services/cookingSlice';
 import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { TIngredient } from '@utils-types';
@@ -18,6 +13,7 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
     const selectIngredients: CookingItemsType = useSelector(
       (state: RootState) => state.cook.cookingItems
     );
+
     const location = useLocation();
     const dispatch: AppDispatch = useDispatch();
     const handleAdd = () => {

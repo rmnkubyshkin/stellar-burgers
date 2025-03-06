@@ -15,6 +15,7 @@ import feedReducer from '../services/feedSlice';
 import cookingReducer, { CookingState } from './cookingSlice';
 import userReducer, { UserState } from './userSlice';
 import orderReducer, { OrderState } from './orderSlice';
+import ordersReducer, { OrdersState } from './ordersSlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,7 +23,8 @@ export const store = configureStore({
     feed: feedReducer,
     cook: cookingReducer,
     user: userReducer,
-    order: orderReducer
+    order: orderReducer,
+    orders: ordersReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -35,6 +37,7 @@ export type RootState = {
   cook: CookingState;
   user: UserState;
   order: OrderState;
+  orders: OrdersState;
 };
 export type AppDispatch = typeof store.dispatch;
 export const useDispatch: () => AppDispatch = () => dispatchHook();

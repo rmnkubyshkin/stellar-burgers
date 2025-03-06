@@ -10,7 +10,6 @@ export const BurgerIngredients: FC = () => {
   const ingredients: TIngredient[] = useSelector(
     (state: RootState) => state.ingredients.data
   );
-  console.log('ingredients: ', ingredients);
   const dispatch: AppDispatch = useDispatch();
   const buns = ingredients.filter((ingredient) => ingredient.type === 'bun');
   const mains = ingredients.filter((ingredient) => ingredient.type === 'main');
@@ -36,11 +35,7 @@ export const BurgerIngredients: FC = () => {
 
   useEffect(() => {
     const fetchIngredients = async () => {
-      try {
-        await dispatch(getIngredients()).unwrap();
-      } catch (error) {
-        console.error('Failed to fetch ingredients:', error);
-      }
+      await dispatch(getIngredients()).unwrap();
     };
     fetchIngredients();
   }, [dispatch]);

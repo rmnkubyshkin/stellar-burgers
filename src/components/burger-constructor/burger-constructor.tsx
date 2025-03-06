@@ -3,20 +3,15 @@ import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import { AppDispatch, RootState } from '../../services/store';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  CookingItemsType,
-  handleOrderRequest
-} from '../../services/cookingSlice';
-import { useNavigate } from 'react-router-dom';
-import { pushOrder } from '../../services/orderSlice';
+import { CookingItemsType, CookingState } from '../../services/cookingSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { pushOrder, resetOrder } from '../../services/orderSlice';
+import { getUser } from '../../services/userSlice';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const orderModalData: TOrder | null = useSelector(
-    (state: RootState) => state.order.order
-  );
+  const orderModalData = useSelector((state: RootState) => state.order.order);
   const orderRequest = useSelector(
     (state: RootState) => state.order.orderRequest
   );
@@ -24,33 +19,27 @@ export const BurgerConstructor: FC = () => {
     (state: RootState) => state.cook.cookingItems
   );
   const elementsOfOrder: string[] = [];
-
-  const [orderData, setOrderData] = useState<TOrder | null>(null);
-  const [orderReq, setOrderReq] = useState<boolean>(false);
-  let response;
   function onOrderClick() {
-    items.ingredients.forEach((el) => {
-      elementsOfOrder.push(el._id);
+    const _getUser = async () => await dispatch(getUser()).unwrap();
+    _getUser().then((r) => {
+      if (r.success) {
+        items.ingredients.forEach((el) => {
+          elementsOfOrder.push(el._id);
+        });
+        items.bun && elementsOfOrder.push(items.bun._id);
+        const _pushOrder = async () =>
+          await dispatch(pushOrder(elementsOfOrder)).unwrap();
+        _pushOrder();
+      } else {
+        navigate('/login');
+      }
     });
-    elementsOfOrder.push(items.bun._id);
-    const _pushOrder = async () => {
-      elementsOfOrder &&
-        (response = await dispatch(pushOrder(elementsOfOrder)).unwrap());
-    };
-    _pushOrder();
-    if (!items.bun || orderReq) return;
+    if (!items.bun || orderRequest) return;
   }
+
   const closeOrderModal = () => {
-    navigate('/');
+    dispatch(resetOrder());
   };
-  useEffect(() => {
-    if (orderModalData && orderModalData._id) {
-      setOrderReq(orderRequest);
-      console.log('orderRequest:', orderReq);
-      setOrderData(orderModalData);
-      console.log('orderData:', orderData);
-    }
-  }, [orderModalData, orderRequest]);
 
   const price = useMemo(() => {
     const bunPrice = items.bun ? items.bun.price * 2 : 0;
@@ -63,9 +52,9 @@ export const BurgerConstructor: FC = () => {
   return (
     <BurgerConstructorUI
       price={price}
-      orderRequest={orderReq}
+      orderRequest={orderRequest}
       constructorItems={items}
-      orderModalData={orderData}
+      orderModalData={orderModalData}
       onOrderClick={onOrderClick}
       closeOrderModal={closeOrderModal}
     />
