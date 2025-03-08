@@ -1,12 +1,8 @@
 import styles from './constructor-page.module.css';
-import { AppHeader, BurgerIngredients } from '../../components';
+import { BurgerIngredients } from '../../components';
 import { BurgerConstructor } from '../../components';
 import { Preloader } from '../../components/ui';
 import { FC } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { TIngredient } from '@utils-types';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../services/store';
 
 export const ConstructorPage: FC = () => {
   const isIngredientsLoading = false;

@@ -4,7 +4,7 @@ import { FeedInfoUI } from '../ui/feed-info';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from 'src/services/store';
 import { getFeeds, TFeedsResponseSlice } from '../../services/feedSlice';
-import { TFeedsResponse } from '@api';
+import { useAppDispatch } from '../../services/hooks/hooks';
 
 const getOrders = (orders: TOrder[], status: string): number[] =>
   orders
@@ -13,7 +13,7 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
     .slice(0, 20);
 
 export const FeedInfo: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const feed: TFeedsResponseSlice = useSelector(
     (state: RootState) => state.feed.feed
   );

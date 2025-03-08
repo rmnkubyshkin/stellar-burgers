@@ -1,15 +1,16 @@
-import { FC, useEffect, useMemo, useState } from 'react';
-import { TConstructorIngredient, TIngredient, TOrder } from '@utils-types';
+import { FC, useMemo } from 'react';
+import { TIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { AppDispatch, RootState } from '../../services/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { CookingItemsType, CookingState } from '../../services/cookingSlice';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { RootState } from '../../services/store';
+import { useSelector } from 'react-redux';
+import { CookingItemsType } from '../../services/cookingSlice';
+import { useNavigate } from 'react-router-dom';
 import { pushOrder, resetOrder } from '../../services/orderSlice';
 import { getUser } from '../../services/userSlice';
+import { useAppDispatch } from '../../services/hooks/hooks';
 
 export const BurgerConstructor: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const orderModalData = useSelector((state: RootState) => state.order.order);
   const orderRequest = useSelector(

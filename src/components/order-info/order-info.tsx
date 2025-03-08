@@ -2,15 +2,17 @@ import { FC, useEffect, useMemo, useState } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient, TOrder } from '@utils-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getIngredients } from '../../services/ingredientsSlice';
-import { RootState, AppDispatch } from '../../services/store';
+import { RootState } from '../../services/store';
 import { getFeeds } from '../../services/feedSlice';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getIdFromPathname } from '../../utils/general';
+import { useAppDispatch } from '../../services/hooks/hooks';
 
 export const OrderInfo: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const ingredients: TIngredient[] = useSelector(
@@ -102,10 +104,11 @@ export const OrderInfo: FC = () => {
       total
     };
   }, [orderData, ingredients]);
-
+  const handleCloseFeed = () => {
+    navigate('/feed');
+  };
   if (!orderInfo) {
     return <Preloader />;
   }
-
   return <OrderInfoUI orderInfo={orderInfo} />;
 };

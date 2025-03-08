@@ -1,21 +1,17 @@
-import { FC, memo } from 'react';
+import { FC, memo, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BurgerIngredientUI } from '@ui';
 import { TBurgerIngredientProps } from './type';
-import { setCookingItems, CookingItemsType } from '../../services/cookingSlice';
-import { AppDispatch, RootState } from '../../services/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { TIngredient } from '@utils-types';
-import { selectIngredients } from 'src/services/ingredientsSlice';
+import { setCookingItems } from '../../services/cookingSlice';
+import { useAppDispatch } from '../../services/hooks/hooks';
 
 export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
   ({ ingredient, count }) => {
-    const selectIngredients: CookingItemsType = useSelector(
-      (state: RootState) => state.cook.cookingItems
-    );
-
     const location = useLocation();
-    const dispatch: AppDispatch = useDispatch();
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+      count += 1;
+    }, [dispatch]);
     const handleAdd = () => {
       dispatch(setCookingItems(ingredient));
     };

@@ -15,7 +15,12 @@ export const Login: FC = () => {
     const _loginUser = async () =>
       await dispatch(loginUser({ email, password })).unwrap();
     _loginUser().then(() => {
-      async () => await dispatch(refreshTokens()).unwrap();
+      async () =>
+        await dispatch(refreshTokens())
+          .unwrap()
+          .then((r) => {
+            r.success ? navigate('/profile') : navigate('/register');
+          });
     });
   };
 
