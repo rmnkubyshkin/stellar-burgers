@@ -4,6 +4,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
+  root: true,
+  extends: '@react-native-community',
+  rules: {
+    'prettier/prettier': 0,
+  },
+};
+module.exports = {
   entry: path.resolve(__dirname, './src/index.tsx'),
   module: {
     rules: [
