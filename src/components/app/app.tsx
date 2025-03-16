@@ -1,14 +1,111 @@
-import { ConstructorPage } from '@pages';
+import {
+  ConstructorPage,
+  Feed,
+  ForgotPassword,
+  Login,
+  NotFound404,
+  Profile,
+  ProfileOrders,
+  Register,
+  ResetPassword
+} from '@pages';
 import '../../index.css';
-import styles from './app.module.css';
+import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { ProtectedRoute } from '../protected-route/protected-route';
 
-import { AppHeader } from '@components';
+const App = () => {
+  const navigate = useNavigate();
+  const handleCloseIngredient = () => {
+    navigate(-1);
+  };
+  const handleCloseOrder = () => {
+    navigate('/profile/orders');
+  };
+  const handleCloseFeed = () => {
+    navigate('/feed');
+  };
+  const location = useLocation();
+  const backgroundLocation = location.state?.backgroundLocation;
 
-const App = () => (
-  <div className={styles.app}>
-    <AppHeader />
-    <ConstructorPage />
-  </div>
-);
+  return (
+    <>
+      <AppHeader />
+      <Routes location={backgroundLocation || location}>
+        <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:number' element={<Feed />} />
+      </Routes>
+      <Routes>
+        <Route
+          path='/feed/:number'
+          element={
+            <Modal title={''} onClose={handleCloseFeed}>
+              <OrderInfo />
+            </Modal>
+          }
+        />
+      </Routes>
+      <Routes location={backgroundLocation || location}>
+        <Route path='/profile/orders' element={<ProfileOrders />} />
+        <Route path='/profile/orders/:number' element={<ProfileOrders />} />
+      </Routes>
+      <Routes>
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <Modal title={''} onClose={handleCloseOrder}>
+              <OrderInfo />
+            </Modal>
+          }
+        />
+      </Routes>
+      <Routes location={backgroundLocation || location}>
+        <Route path='/' element={<ConstructorPage />} />
+        <Route path='/ingredients/:id' element={<ConstructorPage />} />
+      </Routes>
+      <Routes>
+        <Route
+          path='/ingredients/:id'
+          element={
+            <Modal title={'Детали ингредиента'} onClose={handleCloseIngredient}>
+              <IngredientDetails />
+            </Modal>
+          }
+        />
+      </Routes>
+      <Routes>
+        <Route path='*' element={<NotFound404 />} />
+        <Route path='/' element={<ConstructorPage />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route
+          path='/forgot-password'
+          element={
+            <ProtectedRoute>
+              <ForgotPassword />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/reset-password'
+          element={
+            <ProtectedRoute>
+              <ResetPassword />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/profile'
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </>
+  );
+};
 
 export default App;

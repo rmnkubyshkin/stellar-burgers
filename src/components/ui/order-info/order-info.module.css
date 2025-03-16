@@ -1,8 +1,16 @@
 .wrap {
-  margin: 0 auto;
   width: 640px;
+  margin: 0 auto;
 }
 .number {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  color: #F2F2F3;
+  font-family: 'Iceland';
+  font-weight: 400;
+  font-size: 28px;
+  font-style: normal;
+  line-height: 24px;
   text-align: center;
 }
 
@@ -12,25 +20,26 @@
 
 .header {
   margin: 0;
+
 }
 
 .img_wrap {
+  position: relative;
   width: 64px;
   height: 64px;
   border-radius: 50%;
   background: linear-gradient(63.18deg, #801ab3 0%, #4c4cff 100%);
-  position: relative;
 }
 
 .border {
+  position: absolute;
+  top: 2px;
+  left: 2px;
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #1c1c21;
-  position: absolute;
-  left: 2px;
-  top: 2px;
   text-align: center;
+  background-color: #1c1c21;
 }
 
 .img {
@@ -51,10 +60,10 @@
 }
 
 .list {
-  list-style: none;
+  max-height: 320px;
   padding: 0;
   overflow-y: auto;
-  max-height: 320px;
+  list-style: none;
 }
 
 .list::-webkit-scrollbar {
