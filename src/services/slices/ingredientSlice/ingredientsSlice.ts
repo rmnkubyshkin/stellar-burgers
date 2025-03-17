@@ -8,7 +8,7 @@ export interface IngredientsState {
   error: string | null | undefined;
 }
 
-const initialState: IngredientsState = {
+export const initialState: IngredientsState = {
   data: [],
   loading: false,
   error: null
@@ -25,7 +25,7 @@ export const ingredientsSlice = createSlice({
   initialState,
   reducers: {},
   selectors: {
-    selectIngredients: (state: IngredientsState) => state.data
+    selectIngredients: (state) => state.data
   },
   extraReducers: (builder) => {
     builder

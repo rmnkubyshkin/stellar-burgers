@@ -2,9 +2,9 @@ import { ProfileOrdersUI } from '@ui-pages';
 import { TOrder } from '@utils-types';
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getFeeds } from '../../services/feedSlice';
-import { getOrders } from '../../services/ordersSlice';
-import { AppDispatch, RootState } from '../../services/store';
+import { getFeeds } from '../../services/slices/feedSlice/feedSlice';
+import { getOrders } from '../../services/slices/ordersSlice/ordersSlice';
+import { AppDispatch, RootState } from '../../services/store/store';
 
 export const ProfileOrders: FC = () => {
   const dispatch: AppDispatch = useDispatch();

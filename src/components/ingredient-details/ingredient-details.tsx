@@ -3,7 +3,7 @@ import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
 import { TIngredient } from '@utils-types';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../services/store';
+import { RootState } from '../../services/store/store';
 import { useLocation } from 'react-router-dom';
 import { getIdFromPathname } from '../../utils/general';
 

@@ -1,8 +1,8 @@
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { RegisterUI } from '@ui-pages';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../services/store';
-import { registerUser } from '../../services/userSlice';
+import { AppDispatch } from '../../services/store/store';
+import { registerUser } from '../../services/slices/userSlice/userSlice';
 import { useNavigate } from 'react-router-dom';
 
 export const Register: FC = () => {

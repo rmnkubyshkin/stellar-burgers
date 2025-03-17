@@ -5,8 +5,8 @@ import { OrderCardProps } from './type';
 import { TIngredient } from '@utils-types';
 import { OrderCardUI } from '../ui/order-card';
 import { useSelector, useDispatch } from 'react-redux';
-import { getIngredients } from '../../services/ingredientsSlice';
-import { RootState, AppDispatch } from '../../services/store';
+import { getIngredients } from '../../services/slices/ingredientSlice/ingredientsSlice';
+import { RootState, AppDispatch } from '../../services/store/store';
 
 const maxIngredients = 6;
 

@@ -10,7 +10,7 @@ import {
 } from '@api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
-import { getCookie, setCookie } from '../utils/cookie';
+import { getCookie, setCookie } from '../../../utils/cookie';
 
 export type UserState = {
   isAuthChecked: boolean;
@@ -102,6 +102,10 @@ export const userSlice = createSlice({
         state.isAuthChecked = true;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
+        if (!action.payload) {
+          state.loginUserError = 'Registration failed';
+          return;
+        }
         state.user = action.payload.user;
         state.loginUserRequest = false;
         state.isAuthenticated = true;
@@ -140,8 +144,11 @@ export const userSlice = createSlice({
         state.loginUserRequest = false;
         state.isAuthenticated = true;
         state.isAuthChecked = true;
-        state.user.email = action.payload.user.email;
-        state.user.name = action.payload.user.name;
+        state.user = {
+          ...state.user,
+          email: action.payload.user.email,
+          name: action.payload.user.name
+        };
       })
       .addCase(resetPassword.pending, (state) => {
         state.loginUserRequest = true;
@@ -154,6 +161,7 @@ export const userSlice = createSlice({
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
         state.isAuthenticated = false;
+        state.loginUserRequest = false;
         state.isAuthChecked = false;
       })
       .addCase(getUser.pending, (state) => {

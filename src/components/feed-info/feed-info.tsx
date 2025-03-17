@@ -2,8 +2,11 @@ import { FC, useEffect, useState } from 'react';
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from 'src/services/store';
-import { getFeeds, TFeedsResponseSlice } from '../../services/feedSlice';
+import { RootState, AppDispatch } from 'src/services/store/store';
+import {
+  getFeeds,
+  TFeedsResponseSlice
+} from '../../services/slices/feedSlice/feedSlice';
 import { useAppDispatch } from '../../services/hooks/hooks';
 
 const getOrders = (orders: TOrder[], status: string): number[] =>
