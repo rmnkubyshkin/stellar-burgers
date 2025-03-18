@@ -21,24 +21,14 @@ jest.mock('@api', () => ({
 
 describe('Тесты для ordersSlice', () => {
   describe('Асинхронный редьюсер getOrders', () => {
-    describe('Получение заказов с сервера асинхронного экшена getOrders', () => {
-      it('Должен корректно обрабатывать успешную загрузку заказов', async () => {
-        const store = configureStore({
-          reducer: {
-            orders: reducer
-          }
-        });
+    const mockedGetOrdersApi = getOrdersApi as jest.MockedFunction<
+      typeof getOrdersApi
+    >;
 
-        await store.dispatch(getOrders());
+    describe('Тестирование getOrders.pending', () => {
+      it('Должен корректно обрабатывать состояние загрузки', () => {
+        mockedGetOrdersApi.mockImplementationOnce(() => new Promise(() => {}));
 
-        expect(store.getState().orders.orders).toEqual(mockApiOrders);
-
-        expect(getOrdersApi).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('Состояние загрузки асинхронного редьюсера getOrders', () => {
-      it('Должен корректно обрабатывать состояние загрузки', async () => {
         const store = configureStore({
           reducer: {
             orders: reducer
@@ -47,22 +37,16 @@ describe('Тесты для ordersSlice', () => {
 
         store.dispatch(getOrders());
 
-        expect(store.getState().orders).toEqual({
-          orders: [],
-          loading: true,
-          error: null
-        });
+        const state = store.getState().orders;
+        expect(state.loading).toBe(true);
+        expect(state.error).toBeNull();
+        expect(state.orders).toEqual([]);
       });
     });
 
-    describe('Отработка ошибки при работе редьюсера getOrders', () => {
-      it('Должен корректно обрабатывать ошибку', async () => {
-        const errorMessage = 'Server error';
-        (
-          getOrdersApi as jest.MockedFunction<typeof getOrdersApi>
-        ).mockRejectedValueOnce({
-          message: errorMessage
-        });
+    describe('Тестирование getOrders.fulfilled', () => {
+      it('Должен корректно обрабатывать успешную загрузку заказов', async () => {
+        mockedGetOrdersApi.mockResolvedValueOnce(mockApiOrders);
 
         const store = configureStore({
           reducer: {
@@ -72,11 +56,31 @@ describe('Тесты для ordersSlice', () => {
 
         await store.dispatch(getOrders());
 
-        expect(store.getState().orders).toEqual({
-          orders: [],
-          loading: false,
-          error: errorMessage
+        const state = store.getState().orders;
+        expect(state.loading).toBe(false);
+        expect(state.error).toBeNull();
+        expect(state.orders).toEqual(mockApiOrders);
+        expect(getOrdersApi).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('Тестирование getOrders.rejected', () => {
+      it('Должен корректно обрабатывать ошибку при загрузке заказов', async () => {
+        const errorMessage = 'Ошибка загрузки заказов';
+        mockedGetOrdersApi.mockRejectedValueOnce({ message: errorMessage });
+
+        const store = configureStore({
+          reducer: {
+            orders: reducer
+          }
         });
+
+        await store.dispatch(getOrders());
+
+        const state = store.getState().orders;
+        expect(state.loading).toBe(false);
+        expect(state.error).toBe(errorMessage);
+        expect(state.orders).toEqual([]);
       });
     });
   });

@@ -14,7 +14,7 @@ export const BurgerIngredientUI: FC<TBurgerIngredientUIProps> = memo(
   ({ ingredient, count, handleAdd, locationState }) => {
     const { image, price, name, _id } = ingredient;
     return (
-      <li className={styles.container}>
+      <li className={styles.container} data-testid={ingredient._id}>
         {count && <Counter count={count} />}
         <Link
           key={ingredient._id}

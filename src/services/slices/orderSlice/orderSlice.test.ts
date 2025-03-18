@@ -25,31 +25,7 @@ jest.mock('@api', () => ({
 
 describe('Тесты для orderSlice', () => {
   describe('Асинхронный редьюсер pushOrder', () => {
-    describe('Синхронный редьюсер resetOrder', () => {
-      it('Должен сбрасывать заказ и состояние загрузки', () => {
-        const store = configureStore({
-          reducer: {
-            order: reducer
-          }
-        });
-
-        store.dispatch({
-          type: 'order/pushOrder/fulfilled',
-          payload: { order: mockApiOrder.order }
-        });
-
-        store.dispatch(resetOrder());
-
-        expect(store.getState().order).toEqual({
-          order: null,
-          orderRequest: false,
-          loading: false,
-          error: null
-        });
-      });
-    });
-
-    describe('Получение заказа с сервера ассинхронного экшена pushOrder', () => {
+    describe('Тестирование pushOrder.fulfilled', () => {
       it('Должен корректно обрабатывать успешную загрузку заказа', async () => {
         const store = configureStore({
           reducer: {
@@ -64,7 +40,7 @@ describe('Тесты для orderSlice', () => {
         expect(orderBurgerApi).toHaveBeenCalledTimes(1);
       });
     });
-    describe('Состояние загрузки ассинхронного редьюсера pushOrder', () => {
+    describe('Тестирование pushOrder.pending', () => {
       it('Должен корректно обрабатывать состояние загрузки', async () => {
         const store = configureStore({
           reducer: {
@@ -82,7 +58,7 @@ describe('Тесты для orderSlice', () => {
         });
       });
     });
-    describe('Отработка ошибки при работе редьюсера pushOrder', () => {
+    describe('Тестирование pushOrder.rejected', () => {
       it('Должен корректно обрабатывать ошибку', async () => {
         const errorMessage = 'Server error';
         (
@@ -108,6 +84,31 @@ describe('Тесты для orderSlice', () => {
       });
     });
   });
+
+  describe('Синхронный редьюсер resetOrder', () => {
+    it('Должен сбрасывать заказ и состояние загрузки', () => {
+      const store = configureStore({
+        reducer: {
+          order: reducer
+        }
+      });
+
+      store.dispatch({
+        type: 'order/pushOrder/fulfilled',
+        payload: { order: mockApiOrder.order }
+      });
+
+      store.dispatch(resetOrder());
+
+      expect(store.getState().order).toEqual({
+        order: null,
+        orderRequest: false,
+        loading: false,
+        error: null
+      });
+    });
+  });
+
   describe('Селекторы orderSlice', () => {
     describe('Селектор selectOrder', () => {
       it('Должен выбирать заказ из стора', () => {
@@ -124,6 +125,7 @@ describe('Тесты для orderSlice', () => {
       });
     });
   });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

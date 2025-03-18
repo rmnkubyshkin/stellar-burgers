@@ -98,7 +98,8 @@ export const userSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loginUserRequest = false;
-        state.loginUserError = action.payload as string;
+        state.loginUserError =
+          (action.payload as string) || 'Ошибка регистрации';
         state.isAuthChecked = true;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
@@ -119,7 +120,8 @@ export const userSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loginUserRequest = false;
-        state.loginUserError = action.payload as string;
+        state.loginUserError =
+          (action.payload as string) || 'Ошибка логирования';
         state.isAuthChecked = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
@@ -136,7 +138,8 @@ export const userSlice = createSlice({
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.loginUserRequest = false;
-        state.loginUserError = action.payload as string;
+        state.loginUserError =
+          (action.payload as string) || 'Ошибка обновления';
         state.isAuthChecked = true;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
@@ -156,7 +159,8 @@ export const userSlice = createSlice({
       })
       .addCase(resetPassword.rejected, (state, action) => {
         state.loginUserRequest = false;
-        state.loginUserError = action.payload as string;
+        state.loginUserError =
+          (action.payload as string) || 'Ошибка сброса пароля';
         state.isAuthChecked = true;
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
@@ -170,7 +174,8 @@ export const userSlice = createSlice({
       })
       .addCase(getUser.rejected, (state, action) => {
         state.loginUserRequest = false;
-        state.loginUserError = action.payload as string;
+        state.loginUserError =
+          (action.payload as string) || 'Ошибка получения данных пользователя';
         state.isAuthChecked = true;
       })
       .addCase(getUser.fulfilled, (state, action) => {
@@ -185,7 +190,8 @@ export const userSlice = createSlice({
       })
       .addCase(refreshTokens.rejected, (state, action) => {
         state.loginUserRequest = false;
-        state.loginUserError = action.payload as string;
+        state.loginUserError =
+          (action.payload as string) || 'Ошибка обновления токенов';
         state.isAuthChecked = true;
       })
       .addCase(refreshTokens.fulfilled, (state, action) => {
@@ -201,7 +207,8 @@ export const userSlice = createSlice({
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.loginUserRequest = false;
-        state.loginUserError = action.payload as string;
+        state.loginUserError =
+          (action.payload as string) || 'Ошибка выхода из системы';
         state.isAuthChecked = true;
       })
       .addCase(logoutUser.fulfilled, (state, action) => {

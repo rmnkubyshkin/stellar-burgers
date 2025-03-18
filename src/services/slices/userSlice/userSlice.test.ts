@@ -59,7 +59,8 @@ describe('Тесты для userSlice', () => {
     const mockedRegisterUserApi = registerUserApi as jest.MockedFunction<
       typeof registerUserApi
     >;
-    describe('Состояние загрузки при регистрации', () => {
+
+    describe('Тестирование registerUser.pending', () => {
       it('Должен корректно обрабатывать состояние загрузки', () => {
         mockedRegisterUserApi.mockImplementationOnce(
           () => new Promise(() => {})
@@ -69,20 +70,16 @@ describe('Тесты для userSlice', () => {
             user: reducer
           }
         });
-
         store.dispatch(registerUser(mockRegisterData));
-
         const state = store.getState().user;
         expect(state.loginUserRequest).toBe(true);
         expect(state.loginUserError).toBeNull();
       });
     });
 
-    describe('Успешная регистрация пользователя', () => {
+    describe('Тестирование registerUser.fulfilled', () => {
       it('Должен корректно обрабатывать успешную регистрацию', async () => {
-        (
-          registerUserApi as jest.MockedFunction<typeof registerUserApi>
-        ).mockResolvedValueOnce(mockApiResponse);
+        mockedRegisterUserApi.mockResolvedValueOnce(mockApiResponse);
 
         const store = configureStore({
           reducer: {
@@ -103,9 +100,11 @@ describe('Тесты для userSlice', () => {
       });
     });
 
-    describe('Обработка ошибки при регистрации', () => {
+    describe('Тестирование registerUser.rejected', () => {
       it('Должен корректно обрабатывать ошибку', async () => {
-        mockedRegisterUserApi.mockRejectedValueOnce({ message: undefined });
+        mockedRegisterUserApi.mockRejectedValueOnce({
+          message: 'Ошибка регистрации'
+        });
 
         const store = configureStore({
           reducer: {
@@ -117,7 +116,7 @@ describe('Тесты для userSlice', () => {
 
         const state = store.getState().user;
         expect(state.loginUserRequest).toBe(false);
-        expect(state.loginUserError).toBe(undefined);
+        expect(state.loginUserError).toBe('Ошибка регистрации');
         expect(state.isAuthChecked).toBe(true);
         expect(state.isAuthenticated).toBe(false);
       });
@@ -128,7 +127,26 @@ describe('Тесты для userSlice', () => {
     const mockedLoginUserApi = loginUserApi as jest.MockedFunction<
       typeof loginUserApi
     >;
-    describe('Успешный логин пользователя', () => {
+
+    describe('Тестирование loginUser.pending', () => {
+      it('Должен корректно обрабатывать состояние загрузки', () => {
+        mockedLoginUserApi.mockImplementationOnce(() => new Promise(() => {}));
+
+        const store = configureStore({
+          reducer: {
+            user: reducer
+          }
+        });
+
+        store.dispatch(loginUser(mockLoginData));
+
+        const state = store.getState().user;
+        expect(state.loginUserRequest).toBe(true);
+        expect(state.loginUserError).toBeNull();
+      });
+    });
+
+    describe('Тестирование loginUser.fulfilled', () => {
       it('Должен корректно обрабатывать успешный логин', async () => {
         mockedLoginUserApi.mockResolvedValueOnce(mockApiResponse);
 
@@ -146,33 +164,15 @@ describe('Тесты для userSlice', () => {
         expect(state.isAuthChecked).toBe(true);
         expect(state.loginUserRequest).toBe(false);
         expect(state.loginUserError).toBeNull();
-
         expect(loginUserApi).toHaveBeenCalledTimes(1);
         expect(loginUserApi).toHaveBeenCalledWith(mockLoginData);
       });
     });
-    describe('Состояние загрузки при логине', () => {
-      it('Должен корректно обрабатывать состояние загрузки при логине', () => {
-        mockedLoginUserApi.mockImplementationOnce(() => new Promise(() => {}));
 
-        const store = configureStore({
-          reducer: {
-            user: reducer
-          }
-        });
-
-        store.dispatch(loginUser(mockLoginData));
-
-        const state = store.getState().user;
-        expect(state.loginUserRequest).toBe(true);
-        expect(state.loginUserError).toBeNull();
-      });
-    });
-
-    describe('Обработка ошибки при логине', () => {
+    describe('Тестирование loginUser.rejected', () => {
       it('Должен корректно обрабатывать ошибку', async () => {
         mockedLoginUserApi.mockRejectedValueOnce({
-          message: undefined
+          message: 'Ошибка логирования'
         });
 
         const store = configureStore({
@@ -185,7 +185,7 @@ describe('Тесты для userSlice', () => {
 
         const state = store.getState().user;
         expect(state.loginUserRequest).toBe(false);
-        expect(state.loginUserError).toBe(undefined);
+        expect(state.loginUserError).toBe('Ошибка логирования');
         expect(state.isAuthChecked).toBe(true);
         expect(state.isAuthenticated).toBe(false);
       });
@@ -196,9 +196,11 @@ describe('Тесты для userSlice', () => {
     const mockedUpdateUserApi = updateUserApi as jest.MockedFunction<
       typeof updateUserApi
     >;
-    describe('Состояние загрузки при обновлении', () => {
-      it('Должен корректно обрабатывать состояние загрузки', () => {
+
+    describe('Тестирование updateUser.pending', () => {
+      it('Должен корректно обрабатывать состояние загрузки при обновлении данных пользователя', () => {
         mockedUpdateUserApi.mockImplementationOnce(() => new Promise(() => {}));
+
         const store = configureStore({
           reducer: {
             user: reducer
@@ -213,8 +215,8 @@ describe('Тесты для userSlice', () => {
       });
     });
 
-    describe('Успешное обновление пользователя', () => {
-      it('Должен корректно обрабатывать успешное обновление пользователя', async () => {
+    describe('Тестирование updateUser.fulfilled', () => {
+      it('Должен корректно обрабатывать успешное обновление данных пользователя', async () => {
         mockedUpdateUserApi.mockResolvedValueOnce(mockApiResponse);
 
         const store = configureStore({
@@ -236,9 +238,11 @@ describe('Тесты для userSlice', () => {
       });
     });
 
-    describe('Обработка ошибки при обновлении', () => {
-      it('Должен корректно обрабатывать ошибку', async () => {
-        mockedUpdateUserApi.mockRejectedValueOnce({ message: undefined });
+    describe('Тестирование updateUser.rejected', () => {
+      it('Должен корректно обрабатывать ошибку при обновлении данных пользователя', async () => {
+        mockedUpdateUserApi.mockRejectedValueOnce({
+          message: 'Ошибка обновления'
+        });
 
         const store = configureStore({
           reducer: {
@@ -250,7 +254,7 @@ describe('Тесты для userSlice', () => {
 
         const state = store.getState().user;
         expect(state.loginUserRequest).toBe(false);
-        expect(state.loginUserError).toBe(undefined);
+        expect(state.loginUserError).toBe('Ошибка обновления');
         expect(state.isAuthChecked).toBe(true);
         expect(state.isAuthenticated).toBe(false);
       });
@@ -262,8 +266,8 @@ describe('Тесты для userSlice', () => {
       typeof resetPasswordApi
     >;
 
-    describe('Состояние загрузки при сбросе пароля', () => {
-      it('Должен корректно обрабатывать состояние загрузки', () => {
+    describe('Тестирование resetPassword.pending', () => {
+      it('Должен корректно обрабатывать состояние загрузки при сбросе пароля', () => {
         mockedResetPasswordApi.mockImplementationOnce(
           () => new Promise(() => {})
         );
@@ -284,7 +288,7 @@ describe('Тесты для userSlice', () => {
       });
     });
 
-    describe('Успешный сброс пароля', () => {
+    describe('Тестирование resetPassword.fulfilled', () => {
       it('Должен корректно обрабатывать успешный сброс пароля', async () => {
         mockedResetPasswordApi.mockResolvedValueOnce({ success: true });
 
@@ -306,9 +310,11 @@ describe('Тесты для userSlice', () => {
       });
     });
 
-    describe('Обработка ошибки при сбросе пароля', () => {
-      it('Должен корректно обрабатывать ошибку', async () => {
-        mockedResetPasswordApi.mockRejectedValueOnce({ message: undefined });
+    describe('Тестирование resetPassword.rejected', () => {
+      it('Должен корректно обрабатывать ошибку при сбросе пароля', async () => {
+        mockedResetPasswordApi.mockRejectedValueOnce({
+          message: 'Ошибка сброса пароля'
+        });
 
         const store = configureStore({
           reducer: {
@@ -322,7 +328,7 @@ describe('Тесты для userSlice', () => {
 
         const state = store.getState().user;
         expect(state.loginUserRequest).toBe(false);
-        expect(state.loginUserError).toBe(undefined);
+        expect(state.loginUserError).toBe('Ошибка сброса пароля');
         expect(state.isAuthChecked).toBe(true);
       });
     });
@@ -331,9 +337,9 @@ describe('Тесты для userSlice', () => {
   describe('Асинхронный редьюсер logoutUser', () => {
     const mockedLogoutApi = logoutApi as jest.MockedFunction<typeof logoutApi>;
 
-    describe('Обработка ошибки при выходе из системы', () => {
-      it('Должен корректно обрабатывать ошибку', async () => {
-        mockedLogoutApi.mockRejectedValueOnce({ message: undefined });
+    describe('Тестирование logoutUser.pending', () => {
+      it('Должен корректно обрабатывать состояние загрузки при выходе из системы', () => {
+        mockedLogoutApi.mockImplementationOnce(() => new Promise(() => {}));
 
         const store = configureStore({
           reducer: {
@@ -341,16 +347,15 @@ describe('Тесты для userSlice', () => {
           }
         });
 
-        await store.dispatch(logoutUser());
-        const state = store.getState().user;
+        store.dispatch(logoutUser());
 
-        expect(state.loginUserRequest).toBe(false);
-        expect(state.loginUserError).toBe(undefined);
-        expect(state.isAuthChecked).toBe(true);
+        const state = store.getState().user;
+        expect(state.loginUserRequest).toBe(true);
+        expect(state.loginUserError).toBeNull();
       });
     });
 
-    describe('Успешный выход из системы', () => {
+    describe('Тестирование logoutUser.fulfilled', () => {
       it('Должен корректно обрабатывать успешный выход из системы', async () => {
         mockedLogoutApi.mockResolvedValueOnce({ success: true });
 
@@ -371,9 +376,12 @@ describe('Тесты для userSlice', () => {
       });
     });
 
-    describe('Обработка ошибки при выходе из системы', () => {
-      it('Должен корректно обрабатывать ошибку', async () => {
-        mockedLogoutApi.mockRejectedValueOnce({ message: undefined });
+    describe('Тестирование logoutUser.rejected', () => {
+      it('Должен корректно обрабатывать ошибку при выходе из системы', async () => {
+        mockedLogoutApi.mockRejectedValueOnce({
+          message: 'Ошибка выхода из системы'
+        });
+
         const store = configureStore({
           reducer: {
             user: reducer
@@ -384,7 +392,7 @@ describe('Тесты для userSlice', () => {
 
         const state = store.getState().user;
         expect(state.loginUserRequest).toBe(false);
-        expect(state.loginUserError).toBe(undefined);
+        expect(state.loginUserError).toBe('Ошибка выхода из системы');
         expect(state.isAuthChecked).toBe(true);
       });
     });
@@ -395,12 +403,8 @@ describe('Тесты для userSlice', () => {
       typeof refreshToken
     >;
 
-    afterEach(() => {
-      jest.resetAllMocks();
-    });
-
-    describe('Состояние загрузки при обновлении токенов', () => {
-      it('Должен корректно обрабатывать состояние загрузки', () => {
+    describe('Тестирование refreshTokens.pending', () => {
+      it('Должен корректно обрабатывать состояние загрузки при обновлении токенов', () => {
         mockedRefreshToken.mockImplementationOnce(() => new Promise(() => {}));
 
         const store = configureStore({
@@ -417,7 +421,7 @@ describe('Тесты для userSlice', () => {
       });
     });
 
-    describe('Успешное обновление токенов', () => {
+    describe('Тестирование refreshTokens.fulfilled', () => {
       it('Должен корректно обрабатывать успешное обновление токенов', async () => {
         mockedRefreshToken.mockResolvedValueOnce({
           success: true,
@@ -431,27 +435,22 @@ describe('Тесты для userSlice', () => {
           }
         });
 
-        // Диспатчим действие refreshTokens
         await store.dispatch(refreshTokens());
 
-        // Получаем текущее состояние
         const state = store.getState().user;
-
-        // Проверяем, что состояние обновилось
         expect(state.loginUserRequest).toBe(false);
         expect(state.isAuthenticated).toBe(true);
         expect(state.isAuthChecked).toBe(true);
         expect(state.loginUserError).toBeNull();
-
-        // Проверяем, что токены сохранены
         expect(localStorage.getItem('refreshToken')).toBe('newRefreshToken');
-        // Проверяем, что куки установлены (если используется библиотека для работы с куками)
       });
     });
 
-    describe('Обработка ошибки при обновлении токенов', () => {
-      it('Должен корректно обрабатывать ошибку', async () => {
-        mockedRefreshToken.mockRejectedValueOnce({ message: undefined });
+    describe('Тестирование refreshTokens.rejected', () => {
+      it('Должен корректно обрабатывать ошибку при обновлении токенов', async () => {
+        mockedRefreshToken.mockRejectedValueOnce({
+          message: 'Ошибка обновления токенов'
+        });
 
         const store = configureStore({
           reducer: {
@@ -460,9 +459,10 @@ describe('Тесты для userSlice', () => {
         });
 
         await store.dispatch(refreshTokens());
+
         const state = store.getState().user;
         expect(state.loginUserRequest).toBe(false);
-        expect(state.loginUserError).toBe(undefined);
+        expect(state.loginUserError).toBe('Ошибка обновления токенов');
         expect(state.isAuthChecked).toBe(true);
       });
     });
@@ -473,12 +473,8 @@ describe('Тесты для userSlice', () => {
       typeof getUserApi
     >;
 
-    afterEach(() => {
-      jest.resetAllMocks();
-    });
-
-    describe('Состояние загрузки при получении данных пользователя', () => {
-      it('Должен корректно обрабатывать состояние загрузки', () => {
+    describe('Тестирование getUser.pending', () => {
+      it('Должен корректно обрабатывать состояние загрузки при получении данных пользователя', () => {
         mockedGetUserApi.mockImplementationOnce(() => new Promise(() => {}));
 
         const store = configureStore({
@@ -486,16 +482,17 @@ describe('Тесты для userSlice', () => {
             user: reducer
           }
         });
-        store.dispatch(getUser());
-        const state = store.getState().user;
 
+        store.dispatch(getUser());
+
+        const state = store.getState().user;
         expect(state.loginUserRequest).toBe(true);
         expect(state.loginUserError).toBeNull();
       });
     });
 
-    describe('Успешное получение данных пользователя', () => {
-      it('Должен корректно обрабатывать успешное получение данных', async () => {
+    describe('Тестирование getUser.fulfilled', () => {
+      it('Должен корректно обрабатывать успешное получение данных пользователя', async () => {
         mockedGetUserApi.mockResolvedValueOnce({
           success: true,
           user: mockUser
@@ -506,9 +503,10 @@ describe('Тесты для userSlice', () => {
             user: reducer
           }
         });
-        await store.dispatch(getUser());
-        const state = store.getState().user;
 
+        await store.dispatch(getUser());
+
+        const state = store.getState().user;
         expect(state.user).toEqual(mockUser);
         expect(state.loginUserRequest).toBe(false);
         expect(state.isAuthenticated).toBe(true);
@@ -517,9 +515,11 @@ describe('Тесты для userSlice', () => {
       });
     });
 
-    describe('Обработка ошибки при получении данных пользователя', () => {
-      it('Должен корректно обрабатывать ошибку', async () => {
-        mockedGetUserApi.mockRejectedValueOnce({ message: undefined });
+    describe('Тестирование getUser.rejected', () => {
+      it('Должен корректно обрабатывать ошибку при получении данных пользователя', async () => {
+        mockedGetUserApi.mockRejectedValueOnce({
+          message: 'Ошибка получения данных пользователя'
+        });
 
         const store = configureStore({
           reducer: {
@@ -528,9 +528,12 @@ describe('Тесты для userSlice', () => {
         });
 
         await store.dispatch(getUser());
+
         const state = store.getState().user;
         expect(state.loginUserRequest).toBe(false);
-        expect(state.loginUserError).toBe(undefined);
+        expect(state.loginUserError).toBe(
+          'Ошибка получения данных пользователя'
+        );
         expect(state.isAuthChecked).toBe(true);
       });
     });

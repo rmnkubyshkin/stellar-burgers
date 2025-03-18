@@ -30,7 +30,7 @@ jest.mock('@api', () => ({
 
 describe('Тесты для feedSlice', () => {
   describe('Асинхронный экшен getFeeds', () => {
-    describe('Получение данных с сервера редьюсера getFeeds', () => {
+    describe('Тестирование getFeeds.fullfiled', () => {
       it('Должен корректно обрабатывать успешную загрузку', async () => {
         const store = configureStore({
           reducer: {
@@ -47,7 +47,7 @@ describe('Тесты для feedSlice', () => {
         expect(getFeedsApi).toHaveBeenCalledTimes(1);
       });
     });
-    describe('Состояние загрузки ассинхронного редьюсера getFeeds', () => {
+    describe('Тестирование getFeeds.pending', () => {
       it('Должен корректно обрабатывать состояние загрузки', async () => {
         const store = configureStore({
           reducer: {
@@ -68,7 +68,7 @@ describe('Тесты для feedSlice', () => {
         });
       });
     });
-    describe('Отработка ошибки при работе редьюсера getFeeds', () => {
+    describe('Тестирование getFeeds.rejected', () => {
       it('Должен корректно обрабатывать ошибку', async () => {
         const errorMessage = 'Server error';
         (

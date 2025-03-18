@@ -1,5 +1,6 @@
 import login from '../../fixtures/login.json';
 import orders from '../../fixtures/orders.json';
+import ingredients from '../../fixtures/ingredients.json';
 describe('Тестирование общее', () => {
   beforeEach(() => {
     const mockAccessToken = 'mock-access-token';
@@ -26,7 +27,7 @@ describe('Тестирование общее', () => {
 
     cy.intercept('GET', '**/auth/user', { fixture: 'user.json' }).as('getUser');
 
-    cy.visit('http://192.168.11.138:4000/');
+    cy.visit('http://localhost:4000/');
   });
 
   describe('Перехватывать запрос на получение ингредиентов', () => {
@@ -45,18 +46,23 @@ describe('Тестирование общее', () => {
 
   describe('Перехватывает запрос на аутентификацию', () => {
     it('Должен перехватывать запрос на аутентификацию', () => {
-      cy.visit('http://192.168.11.138:4000/login');
+      cy.visit('http://localhost:4000/login');
       cy.get('[data-testid="login-enter-password"]').type(login.password);
       cy.get('[data-testid="login-enter-username"]').type(login.email);
       cy.get('[data-testid="login-button"]').click();
       cy.location('pathname').should('eq', '/profile');
     });
   });
+
   describe('Создание заказа', () => {
     it('Должен создать заказ', () => {
       cy.wait('@getIngredients');
       cy.contains('Краторная булка N-200i').should('exist');
       cy.contains('Добавить').should('exist').click();
+      cy.contains('Дождитесь готовности на орбитальной станции').should(
+        'not.exist'
+      );
+      cy.contains(orders.order.number).should('not.exist');
       cy.contains('Оформить заказ').should('exist').click();
       cy.contains('Дождитесь готовности на орбитальной станции').should(
         'exist'
@@ -64,27 +70,30 @@ describe('Тестирование общее', () => {
     });
   });
 
-  describe('Открытие модального окна', () => {
+  describe('Открытие модального окна c заказом', () => {
     it('Должен открывать модальное окно', () => {
       cy.wait('@getIngredients');
       cy.contains('Краторная булка N-200i').should('exist');
       cy.contains('Добавить').should('exist').click();
+      cy.get('[data-cy="modal-close-button"]').should('not.exist');
       cy.contains('Оформить заказ').should('exist').click();
       cy.contains(orders.order.number).should('exist');
+      cy.get('[data-cy="modal-close-button"]').should('exist');
     });
   });
 
-  describe('Закрытие модального окна через крестик', () => {
+  describe('Закрытие модального окна с заказом через крестик', () => {
     it('Должен закрывать модальное окно через крестик', () => {
       cy.wait('@getIngredients');
       cy.contains('Краторная булка N-200i').should('exist');
       cy.contains('Добавить').should('exist').click();
       cy.contains('Оформить заказ').should('exist').click();
-      cy.contains('12345').should('exist');
+      cy.contains(orders.order.number).should('exist');
       cy.get('[data-cy="modal-close-button"]').should('exist').click();
       cy.contains('Дождитесь готовности на орбитальной станции').should(
         'not.exist'
       );
+      cy.get('[data-cy="modal-close-button"]').should('not.exist');
     });
   });
 
@@ -93,23 +102,47 @@ describe('Тестирование общее', () => {
       cy.wait('@getIngredients');
       cy.contains('Краторная булка N-200i').should('exist');
       cy.contains('Добавить').should('exist').click();
+      cy.get('[data-cy="total-price-order"]').contains(
+        ingredients.data[0].price * 2
+      );
       cy.contains('Оформить заказ').should('exist').click();
-      cy.contains('12345').should('exist');
+      cy.contains(orders.order.number).should('exist');
       cy.get('[data-cy="modal-close-button"]').should('exist').click();
       cy.contains('Дождитесь готовности на орбитальной станции').should(
         'not.exist'
       );
+      cy.get('[data-cy="total-price-order"]').should('exist').contains(0);
       cy.contains('Выберите булки').should('exist');
       cy.contains('Выберите начинку').should('exist');
     });
   });
 
-  after(() => {
-    cy.window().then((win) => {
-      win.localStorage.setItem('accessToken', '');
-      win.localStorage.setItem('refreshToken', '');
+  describe('Открытие модального окна c ингредиентом', () => {
+    it('Должен открывать модальное окно', () => {
+      const localhost = 'http://localhost:4000/';
+      cy.url().should('eq', localhost);
+      cy.wait('@getIngredients');
+      cy.get(`[data-testid=${ingredients.data[0]._id}]`).click();
+      const url = `ingredients/${ingredients.data[0]._id}`;
+      cy.url().should('eq', localhost + url);
     });
-    cy.setCookie('accessToken', '');
-    cy.setCookie('refreshToken', '');
+  });
+
+  describe('Закрытие модального окна c ингредиентом', () => {
+    it('Должен закрывать модальное окно', () => {
+      const localhost = 'http://localhost:4000/';
+      cy.url().should('eq', localhost);
+      cy.wait('@getIngredients');
+      cy.get(`[data-testid=${ingredients.data[0]._id}]`).click();
+      const url = `ingredients/${ingredients.data[0]._id}`;
+      cy.url().should('eq', localhost + url);
+      cy.get('[data-cy="modal-close-button"]').should('exist').click();
+      cy.url().should('eq', localhost);
+    });
+  });
+
+  after(() => {
+    cy.clearLocalStorage();
+    cy.clearCookies();
   });
 });
