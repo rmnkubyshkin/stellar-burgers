@@ -14,7 +14,7 @@ export interface FeedState {
   error: string | null | undefined;
 }
 
-const initialState: FeedState = {
+export const initialState: FeedState = {
   feed: {
     orders: [],
     total: 0,
@@ -34,7 +34,7 @@ export const feedSlice = createSlice({
   initialState,
   reducers: {},
   selectors: {
-    selectFeed: (state: FeedState) => state.feed
+    selectFeed: (state) => state.feed
   },
   extraReducers: (builder) => {
     builder

@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
-import { RootState } from 'src/services/store';
+import { RootState } from 'src/services/store/store';
 import { Preloader } from '@ui';
-import { getUser } from '../../services/userSlice';
+import { getUser } from '../../services/slices/userSlice/userSlice';
 import { useEffect } from 'react';
 import { useAppDispatch } from '../../services/hooks/hooks';
-import { useLocation, Navigate } from 'react-router-dom';
+import { useLocation, Navigate, useNavigate } from 'react-router-dom';
 
 type ProtectedRouteProps = {
   onlyUnAuth?: boolean;
@@ -16,21 +16,30 @@ export const ProtectedRoute = ({
   children
 }: ProtectedRouteProps) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const location = useLocation();
   const isAuthChecked = useSelector(
     (state: RootState) => state.user.isAuthChecked
   );
   const user = useSelector((state: RootState) => state.user.user);
   useEffect(() => {
-    async () => await dispatch(getUser()).unwrap();
-  }, [isAuthChecked]);
+    const _getUser = async () => await dispatch(getUser()).unwrap();
+    _getUser().then((r) => {
+      if (r.success === true) {
+        navigate('/profile');
+      } else {
+        navigate('/login');
+      }
+    });
+    //async () => await dispatch(getUser()).unwrap();
+  }, [dispatch]);
 
   if (!isAuthChecked) {
     return <Preloader />;
   }
-  if (!onlyUnAuth && !user.email && !user.name) {
-    return <Navigate replace to='/login' state={{ from: location }} />;
-  }
+  // if (!onlyUnAuth && !user.email && !user.name) {
+  //   return <Navigate replace to='/login' state={{ from: location }} />;
+  // }
 
   if (onlyUnAuth && user) {
     const from = location.state?.from || { pathname: '/' };

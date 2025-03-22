@@ -4,8 +4,8 @@ import {
   orderBurgerApi,
   TFeedsResponse,
   TNewOrderResponse
-} from '../utils/burger-api';
-import { TOrder } from '../utils/types';
+} from '../../../utils/burger-api';
+import { TOrder } from '../../../utils/types';
 
 export interface OrderState {
   order: TOrder | null;
@@ -14,7 +14,7 @@ export interface OrderState {
   error: string | null | undefined;
 }
 
-const initialState: OrderState = {
+export const initialState: OrderState = {
   order: null,
   orderRequest: false,
   loading: false,
@@ -38,7 +38,7 @@ export const orderSlice = createSlice({
     }
   },
   selectors: {
-    selectOrder: (state: OrderState) => state.order
+    selectOrder: (state) => state.order
   },
   extraReducers: (builder) => {
     builder

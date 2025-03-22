@@ -10,7 +10,13 @@ import {
   ResetPassword
 } from '@pages';
 import '../../index.css';
-import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
+import {
+  AppHeader,
+  FeedInfo,
+  IngredientDetails,
+  Modal,
+  OrderInfo
+} from '@components';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route/protected-route';
 
@@ -32,50 +38,13 @@ const App = () => {
     <>
       <AppHeader />
       <Routes location={backgroundLocation || location}>
+        <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
-        <Route path='/feed/:number' element={<Feed />} />
-      </Routes>
-      <Routes>
-        <Route
-          path='/feed/:number'
-          element={
-            <Modal title={''} onClose={handleCloseFeed}>
-              <OrderInfo />
-            </Modal>
-          }
-        />
-      </Routes>
-      <Routes location={backgroundLocation || location}>
+        <Route path='/feed/:number' element={<OrderInfo />} />
         <Route path='/profile/orders' element={<ProfileOrders />} />
-        <Route path='/profile/orders/:number' element={<ProfileOrders />} />
-      </Routes>
-      <Routes>
-        <Route
-          path='/profile/orders/:number'
-          element={
-            <Modal title={''} onClose={handleCloseOrder}>
-              <OrderInfo />
-            </Modal>
-          }
-        />
-      </Routes>
-      <Routes location={backgroundLocation || location}>
-        <Route path='/' element={<ConstructorPage />} />
+        <Route path='/profile/orders/:number' element={<OrderInfo />} />
         <Route path='/ingredients/:id' element={<ConstructorPage />} />
-      </Routes>
-      <Routes>
-        <Route
-          path='/ingredients/:id'
-          element={
-            <Modal title={'Детали ингредиента'} onClose={handleCloseIngredient}>
-              <IngredientDetails />
-            </Modal>
-          }
-        />
-      </Routes>
-      <Routes>
-        <Route path='*' element={<NotFound404 />} />
-        <Route path='/' element={<ConstructorPage />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route
@@ -94,7 +63,6 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='/profile'
           element={
@@ -103,7 +71,40 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route path='*' element={<NotFound404 />} />
       </Routes>
+
+      {backgroundLocation && (
+        <Routes>
+          <Route
+            path='/ingredients/:id'
+            element={
+              <Modal
+                title={'Детали ингредиента'}
+                onClose={handleCloseIngredient}
+              >
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title={''} onClose={handleCloseFeed}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <Modal title={''} onClose={handleCloseOrder}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+        </Routes>
+      )}
     </>
   );
 };

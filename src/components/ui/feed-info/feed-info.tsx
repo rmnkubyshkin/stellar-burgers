@@ -3,20 +3,27 @@ import React, { FC, memo } from 'react';
 import styles from './feed-info.module.css';
 
 import { FeedInfoUIProps, HalfColumnProps, TColumnProps } from './type';
+import { Link, useLocation } from 'react-router-dom';
 
 export const FeedInfoUI: FC<FeedInfoUIProps> = memo(
   ({ feed, readyOrders, pendingOrders }) => {
+    const location = useLocation();
     const { total, totalToday } = feed;
-
     return (
       <section>
         <div className={styles.columns}>
-          <HalfColumn
-            orders={readyOrders}
-            title={'Готовы'}
-            textColor={'blue'}
-          />
-          <HalfColumn orders={pendingOrders} title={'В работе'} />
+          <Link
+            key={feed._id}
+            to={`/feed/${feed.number}`}
+            state={{ backgroundLocation: location }}
+          >
+            <HalfColumn
+              orders={readyOrders}
+              title={'Готовы'}
+              textColor={'blue'}
+            />
+            <HalfColumn orders={pendingOrders} title={'В работе'} />
+          </Link>
         </div>
         <Column title={'Выполнено за все время'} content={total} />
         <Column title={'Выполнено за сегодня'} content={totalToday} />

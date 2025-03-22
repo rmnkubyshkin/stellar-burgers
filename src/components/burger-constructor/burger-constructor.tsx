@@ -1,12 +1,19 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { TIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { RootState } from '../../services/store';
+import { RootState } from '../../services/store/store';
 import { useSelector } from 'react-redux';
-import { CookingItemsType } from '../../services/cookingSlice';
+import {
+  CookingItemsType,
+  removeCookingItem,
+  resetCookingItems
+} from '../../services/slices/cookingSlice/cookingSlice';
 import { useNavigate } from 'react-router-dom';
-import { pushOrder, resetOrder } from '../../services/orderSlice';
-import { getUser } from '../../services/userSlice';
+import {
+  pushOrder,
+  resetOrder
+} from '../../services/slices/orderSlice/orderSlice';
+import { getUser } from '../../services/slices/userSlice/userSlice';
 import { useAppDispatch } from '../../services/hooks/hooks';
 
 export const BurgerConstructor: FC = () => {
@@ -37,9 +44,9 @@ export const BurgerConstructor: FC = () => {
     });
     if (!items.bun || orderRequest) return;
   }
-
   const closeOrderModal = () => {
     dispatch(resetOrder());
+    dispatch(resetCookingItems());
   };
 
   const price = useMemo(() => {

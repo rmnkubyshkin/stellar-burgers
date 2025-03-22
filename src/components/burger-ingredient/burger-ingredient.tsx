@@ -2,7 +2,7 @@ import { FC, memo, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BurgerIngredientUI } from '@ui';
 import { TBurgerIngredientProps } from './type';
-import { setCookingItems } from '../../services/cookingSlice';
+import { setCookingItems } from '../../services/slices/cookingSlice/cookingSlice';
 import { useAppDispatch } from '../../services/hooks/hooks';
 
 export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
